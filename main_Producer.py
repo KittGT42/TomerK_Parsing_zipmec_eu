@@ -44,7 +44,7 @@ def work_with_company_profile_tags(soup_company_profile: BeautifulSoup):
     return result
 
 
-def work_with_company_profile_products(soup_company_profile: BeautifulSoup):
+def work_with_company_profile_products():
     # Создайте список для хранения данных
     products_data = []
 
@@ -96,14 +96,6 @@ for i in range(142, 160):
     else:
         data_campo_values_producer = [element.get('data-campo') for element in elements]
 
-    # headers_csv = ['Company name', 'City', 'Country', 'Business', 'Products', 'Tags', 'Fax', 'Telephone', 'Email', 'Web Site',
-    #                'WhatsApp',
-    #                'Mobile', 'Linkedin']
-    #
-    # with open('data_cards_Producer.csv', 'w', encoding='utf-8') as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(headers_csv)
-
     counter_link = 0
     for profile_link in data_campo_values_producer:
         counter_link += 1
@@ -118,7 +110,7 @@ for i in range(142, 160):
             Country = work_with_company_profile_country(soup)
             Business = work_with_company_profile_business(soup)
             Tags = work_with_company_profile_tags(soup)
-            Products = work_with_company_profile_products(soup)
+            Products = work_with_company_profile_products()
             Fax = '-'
             Telephone = '-'
             Email = '-'
@@ -129,9 +121,8 @@ for i in range(142, 160):
 
             # Находим все элементы с атрибутом data-campo
             elements = soup.find_all(attrs={"data-campo": True})
-            # name_spans = soup.find_all('span', {'class': 'uk-text-bold'})
             for elem in elements:
-                if elem.previous.previous[:-2] == 'Fax':
+                if elem.previous.previous.startswith('Fax'):
                     if '+' in elem.get('data-campo'):
                         Fax = elem.get('data-campo')
                     else:
@@ -150,7 +141,7 @@ for i in range(142, 160):
                         WhatsApp = elem.get('data-campo')
                     else:
                         WhatsApp = '+' + elem.get('data-campo')
-                elif elem.previous.previous[:-2] == 'Mobile':
+                elif elem.previous.previous.startswith('Mobile'):
                     if '+' in elem.get('data-campo'):
                         Mobile = elem.get('data-campo')
                     else:
